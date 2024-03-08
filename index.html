@@ -1,0 +1,70 @@
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>images</title>
+  <style>
+    body{
+      margin: 0;
+    }
+    #canvas{
+      display: block;
+      background-color: #000;
+    }
+  </style>
+  <script>
+    window.onload=function(){
+      /* 设置字符 */
+      var code="1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZイウエオカキクケコスセソタチテトナニヌネノハヒフヘホマムメモヤユヨラリルレロワヱン"
+      var codeArr=Array.from(code)
+      var w=canvas.width=window.innerWidth
+      var h=canvas.height=window.innerHeight
+      var ctx=canvas.getContext("2d")
+      var color="#0f0" // 字符颜色
+      var fontSize="15" // 字符大小
+      var columns=parseInt(w/fontSize) // 计算代码的列数
+      var drops=[]
+      var pretime=0
+      var speed=50 // 字符下降速度
+      initCode()
+      /* 初始化代码雨 */
+      function initCode(){
+        w=canvas.width=window.innerWidth
+        h=canvas.height=window.innerHeight
+        columns=parseInt(w/fontSize)
+        for(let i=0;i<columns;i++){
+          drops[i]=h // 每一列代码的位置
+        }
+        /* 得到镜像的画板 */
+        ctx.translate(w,0)
+        ctx.scale(-1,1)
+        /* 绘制代码雨 */
+        function draw(time){
+          if(time-pretime>speed){
+            pretime=time
+            ctx.fillStyle="rgba(0,0,0,0.08)"
+            ctx.fillRect(0,0,w,h)
+            ctx.fillStyle=color
+            ctx.font=`${fontSize}px arial`
+            for(let i in drops){
+              let text=codeArr[Math.floor(Math.random()*codeArr.length)]
+              ctx.fillText(text,i*fontSize+fontSize/2,drops[i]*fontSize)
+              if(drops[i]*fontSize>h&&Math.random()>0.96){
+                drops[i]=0
+              }
+              drops[i]++
+            }
+          }
+          window.requestAnimationFrame(draw)
+        }
+        /* 执行动画 */
+        window.requestAnimationFrame(draw)
+      }
+      /* 监听页面尺寸的变化，重新初始化代码雨 */
+      window.addEventListener('resize',initCode)
+    }
+  </script>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+</html>
